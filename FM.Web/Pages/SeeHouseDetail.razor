@@ -1,0 +1,369 @@
+﻿@page "/SeeHouseDetail"
+@layout MainLayout
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+@inject NavigationManager UriHelper
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.Web.Data
+<div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
+                    <div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="d-flex align-items-center align-self-start">
+                                        <h3 class="mb-0">@houseDto.Header</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
+                    <div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div>
+                                    <button @onclick="ReviewPostOwner" type="button" class="btn btn-info btn-lg btn-block">
+                                        Review Post Owner <i class="mdi mdi-account float-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-4 grid-margin stretch-card">
+                    <div style="height:300px;width:400px">
+                        <div>
+                            <img style="height:200px;width:300px;margin-right:4px" src="corona-free-dark-bootstrap-admin-template-1.0.0/corona-free-dark-bootstrap-admin-template-1.0.0/template/assets/images/sahibinden-satilik-daire.jpg" />
+                            <img style="height:200px;width:300px;margin-right:4px;margin-top:3px" src="corona-free-dark-bootstrap-admin-template-1.0.0/corona-free-dark-bootstrap-admin-template-1.0.0/template/assets/images/ikinci-el-yatak-odasi-takimi1.jpg" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row justify-content-between">
+                                <h4 class="card-title mb-1">About House</h4>
+                                <p class="text-muted mb-1"></p>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="preview-list">
+                                        <div class="preview-item border-bottom">
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Address</h6>
+                                                    <p class="text-muted mb-0">@houseDto.Description</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="preview-item border-bottom">
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Address</h6>
+                                                    <p class="text-muted mb-0">@houseDto.Address</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="preview-item">
+
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Location</h6>
+                                                    <p class="text-muted mb-0">@city.Name</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="preview-item">
+
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Rent</h6>
+                                                    <p class="text-muted mb-0">@houseDto.Pay</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="preview-item">
+
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Deposit</h6>
+                                                    <p class="text-muted mb-0">@houseDto.Deposit</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="preview-item">
+
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Moving In</h6>
+                                                    <p class="text-muted mb-0">@houseDto.MovingIn</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Period</h6>
+                                                    <p class="text-muted mb-0">@houseDto.Period</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-item-content d-sm-flex flex-grow">
+                                                <div class="flex-grow">
+                                                    <h6 class="preview-subject">Created Date</h6>
+                                                    <p class="text-muted mb-0">@houseDto.CreateDate</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Facilities</h4>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Facility Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Cable TV</td>
+                                    <td>@cableTV</td>
+                                </tr>
+                                <tr>
+                                    <td>Internet</td>
+                                    <td>@Internet</td>
+                                </tr>
+                                <tr>
+                                    <td>Washing Machine</td>
+                                    <td>@WashingM</td>
+                                </tr>
+                                <tr>
+                                    <td>Dishwasher</td>
+                                    <td>@Dishwasher</td>
+                                </tr>
+                                <tr>
+                                    <td>Air Conditioner</td>
+                                    <td>@AirConditioner</td>
+                                </tr>
+                                <tr>
+                                    <td>Pets Allowed</td>
+                                    <td>@PetsAllowed</td>
+                                </tr>
+                                <tr>
+                                    <td>Smoking</td>
+                                    <td>@Smoking</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Criterias</h4>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Criteria Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Age</td>
+                                    <td>@criteria.Age</td>
+                                </tr>
+                                <tr>
+                                    <td>Preferred Gender</td>
+                                    <td>@criteria.PreferredGender</td>
+                                </tr>
+                                <tr>
+                                    <td>Cleanliness</td>
+                                    <td>@cleanliness</td>
+                                </tr>
+                                <tr>
+                                    <td>Party Habit</td>
+                                    <td>@partyHabit</td>
+                                </tr>
+                                <tr>
+                                    <td>Friendship</td>
+                                    <td>@friendship</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code{
+    public string RoleID;
+    public int selectedHouseID;
+    public int criteriaid;
+    public int facilityID;
+    public int cityID;
+    HouseDto houseDto = new HouseDto();
+    CityDto city = new CityDto();
+    SampleCriteriaDto criteria = new SampleCriteriaDto();
+    SampleFacilityDto facility = new SampleFacilityDto();
+    List<SampleCriteriaDto> criteriaList = new List<SampleCriteriaDto>();
+    public string cleanliness { get; set; }
+    public string partyHabit { get; set; }
+    public string friendship { get; set; }
+    public string cableTV { get; set; }
+    public string Internet { get; set; }
+    public string WashingM { get; set; }
+    public string Dishwasher { get; set; }
+    public string AirConditioner { get; set; }
+    public string PetsAllowed { get; set; }
+    public string Smoking { get; set; }
+    public int HouseOwnerID { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+
+        RoleID = await sessionStorage.GetItemAsync<string>("RoleID");
+        selectedHouseID = await sessionStorage.GetItemAsync<int>("SelectedHouseID");
+
+        houseDto = await Http.GetFromJsonAsync<HouseDto>("HousePost/SeeHouseDetail/" + selectedHouseID);
+        HouseOwnerID = houseDto.UserID;
+        await sessionStorage.SetItemAsync("HouseOwnerID", HouseOwnerID);
+        cityID = houseDto.CityID;
+        city = await Http.GetFromJsonAsync<CityDto>("City/GetCityByID/" + cityID);
+        criteriaid = houseDto.SampleCriteriaID;
+        facilityID = houseDto.SampleFacilityID;
+        criteria = await Http.GetFromJsonAsync<SampleCriteriaDto>("SampleCriteria/GetSampleCriteriaByID/" + criteriaid);
+        facility = await Http.GetFromJsonAsync<SampleFacilityDto>("SampleFacility/GetSampleFacilityByID/" + facilityID);
+        if (criteria.Cleanliness == "1")
+        {
+            cleanliness = "Yes";
+        }
+        else
+        {
+            cleanliness = "No";
+        }
+        if (criteria.PartyHabit == "1")
+        {
+            partyHabit = "frequently";
+        }
+        else if (criteria.PartyHabit == "2")
+        {
+            partyHabit = "Sometimes";
+        }
+        else
+        {
+            partyHabit = "Never";
+        }
+        if (criteria.Friendship == "1")
+        {
+            friendship = "Yes";
+        }
+        else
+        {
+            friendship = "No";
+        }
+
+        if (facility.CableTv == "1")
+        {
+            cableTV = "Yes";
+        }
+        else
+        {
+            cableTV = "No";
+        }
+        if (facility.Internet == "1")
+        {
+            Internet = "Yes";
+        }
+        else
+        {
+            Internet = "No";
+        }
+        if (facility.WashingMachine == "1")
+        {
+            WashingM = "Yes";
+        }
+        else
+        {
+            WashingM = "No";
+        }
+        if (facility.Dishwasher == "1")
+        {
+            Dishwasher = "Yes";
+        }
+        else
+        {
+            Dishwasher = "No";
+        }
+        if (facility.AirConditioner == "1")
+        {
+            AirConditioner = "Yes";
+        }
+        else
+        {
+            AirConditioner = "No";
+        }
+        if (facility.PetsAllowed == "1")
+        {
+            PetsAllowed = "Yes";
+        }
+        else
+        {
+            PetsAllowed = "No";
+        }
+        if (facility.Smoking == "1")
+        {
+            Smoking = "Yes";
+        }
+        else
+        {
+            Smoking = "No";
+        }
+
+        facilityID = houseDto.SampleFacilityID;
+        facility = await Http.GetFromJsonAsync<SampleFacilityDto>("SampleFacility/GetSampleFacilityByID/" + facilityID);
+
+
+    }
+
+    async void ReviewPostOwner()
+    {
+         navigationaManager.NavigateTo("/PostOwner");
+    }
+}

@@ -1,0 +1,140 @@
+﻿@page "/signup"
+@layout NoLayout
+@inject IJSRuntime js
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.Web.Data 
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solid Template</title>
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,600" rel="stylesheet">
+
+    <link href="/solid/dist/css/style.css" rel="stylesheet" />
+
+</head>
+<html lang="en" class="no-js">
+<body>
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="row w-100 m-0">
+                <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+                    <div class="card col-lg-4 mx-auto">
+                        <div class="card-body px-2 py-2">
+                            <h3 class="card-title text-left mb-3  ml-3" style="font-size:25px">Register</h3>
+                            <div>
+                                <div class="form-group">
+                                    <label style="font-size:15px" class="ml-3">Name</label>
+                                    <input @bind-value="@user.Name" type="text" class="form-control p_input ml-3" style="height:25px;width:300px">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size:15px" class="ml-3">Surname</label>
+                                    <input @bind-value="@user.Surname" type="text" class="form-control p_input ml-3" style="height:25px;width:300px">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size:15px" class="ml-3">Email</label>
+                                    <input @bind-value="@user.Email" type="email" class="form-control p_input ml-3" style="height:25px;width:300px">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size:15px" class="ml-3">Age</label>
+                                    <input @bind-value="@user.Age" type="text" class="form-control p_input ml-3" style="height:25px;width:300px">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect3" style="font-size:15px" class="ml-3">Select Gender</label>
+                                    <select class="form-control form-control ml-3" id="exampleFormControlSelect3" style="width:300px">
+                                        <option selected>Select Gender</option>
+                                        <option value="Woman">Woman</option>
+                                        <option value="Man">Man</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size:15px" class="ml-3">Password</label>
+                                    <input @bind-value="@user.Password" type="password" class="form-control p_input ml-3" style="height:25px;width:300px">
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary btn-block enter-btn" @onclick="RegisterPerson">Sign Up</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- content-wrapper ends -->
+            </div>
+            <!-- row ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+
+</body>
+
+</html>
+
+@code {
+    UserDto user = new UserDto();
+
+    RegisterDto register = new RegisterDto();
+    public async Task RegisterPerson()
+    {
+        if (user.Name != null && user.Surname != null && user.Email != null && user.Password != null && user.Age != null)
+        {
+
+
+            register.Name = user.Name;
+            register.Surname = user.Surname;
+            register.EMail = user.Email;
+            register.Password = user.Password;
+            register.Age = user.Age;
+            register.Gender = user.Gender;
+            register.RoleID = user.RoleID;
+
+            var responseUser = await Http.PostAsJsonAsync("User/Register", register);
+            var responsestr = await responseUser.Content.ReadFromJsonAsync<ApiResponseDto<LoginResponseDto>>();
+            if (responsestr.IsSucces)
+            {
+                await sessionStorage.SetItemAsync("ID", responsestr.Data.ID);
+                await sessionStorage.SetItemAsync("Name", responsestr.Data.Name);
+                await sessionStorage.SetItemAsync("Surname", responsestr.Data.Surname);
+                await sessionStorage.SetItemAsync("RoleID", responsestr.Data.RoleID.ToString());
+
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", responsestr.Data.TokenID.ToString());
+                OnlineUserInformation onlineUser = new OnlineUserInformation()
+                {
+                    ID = responsestr.Data.ID,
+                    Name = responsestr.Data.Name,
+                    Surname = responsestr.Data.Surname,
+                    Email = responsestr.Data.Email,
+                    RoleID = responsestr.Data.RoleID,
+                    TokenID = responsestr.Data.TokenID,
+                };
+                await sessionStorage.SetItemAsync("ID", onlineUser.ID);
+                await sessionStorage.SetItemAsync("Name", onlineUser.Name);
+                await sessionStorage.SetItemAsync("Surname", onlineUser.Surname);
+                navigationaManager.NavigateTo("/signin");
+
+            }
+
+
+
+        }
+    }
+
+    async void SelectGender(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            user.Gender = e.Value.ToString();
+
+        }
+        else
+        {
+            user.Gender = null;
+        }
+
+    }
+
+}

@@ -1,0 +1,399 @@
+﻿@page "/dashboard"
+@layout MainLayout
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+@inject NavigationManager UriHelper
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.Web.Data
+<div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+        @if (RoleID == "2")
+        {
+            <nav class="navbar p-4 fixed-top d-flex flex-row">
+                <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+                    <a class="navbar-brand brand-logo-mini" href="index.html"></a>
+                </div>
+                <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown d-none d-lg-block">
+                            <div class="form-group" style="margin-left:50px; width:200px">
+                                <label for="exampleFormControlSelect3">Select City</label>
+                                <select class="form-control form-control-sm" id="exampleFormControlSelect3" @onchange="@GetDistrictList">
+                                    <option selected>Select City</option>
+                                    @foreach (var item in cityList)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+
+                                    }
+
+                                </select>
+                            </div>
+                        </li>
+                        <li class="nav-item nav-settings d-none d-lg-block">
+                            <div class="form-group" style="margin-left:50px; width:200px">
+                                <label for="exampleFormControlSelect3">Select District</label>
+                                <select class="form-control form-control-sm" id="exampleFormControlSelect3" @onchange="@SelectDistrict">
+                                    <option value="@temp" selected>Select District</option>
+                                    @foreach (var item in listOfDistrict)
+                                    {
+                                        if (item.isSelected)
+                                        {
+                                            <option value="@item.ID" selected>@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.ID">@item.Name</option>
+                                        }
+
+
+                                    }
+
+                                </select>
+
+                            </div>
+
+                        </li>
+                        <li class="nav-item nav-settings d-none d-lg-block">
+                            <div class="form-group" style="margin-left:50px; width:200px">
+                                <label for="exampleFormControlSelect3">Select Gender</label>
+                                <select class="form-control form-control-sm" id="exampleFormControlSelect3" @onchange="@SelectGender">
+                                    <option selected>Select Gender</option>
+                                    <option value="Woman">Woman</option>
+                                    <option value="Man">Man</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li class="nav-item nav-settings d-none d-lg-block">
+                            <div class="form-group" style="margin-left:50px; width:200px">
+                                <label for="exampleFormControlSelect3">Select Age</label>
+                                <select class="form-control form-control-sm" id="exampleFormControlSelect3" @onchange="@SelectAge">
+                                    <option selected>Select</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="25+">25+</option>
+                                </select>
+                            </div>
+                        </li>
+                      
+                    </ul>
+
+                </div>
+            </nav>
+        }
+
+        <div class="content p-4">
+            @if (AlertResultCity)
+            {
+                <p class="p-5">No result for this City, You can see other options for you</p>
+            }
+            @if (AlertResultDistrict)
+            {
+                <p class="p-5">No result for this District, You can see other options for you</p>
+            }
+            @if (AlertResultAge)
+            {
+                <p class="p-5">No result for this age, You can see other options for you</p>
+            }
+            @if (AlertPost)
+            {
+                <div class="row">
+                    @foreach (var item in houseList)
+                    {
+
+                        <div class="card" style="width: 20rem;background-color:lightsteelblue;margin-left:20px;margin-top:10px;opacity:0.7">
+                            <img class="card-img-top p-3" style="width:300px;height:200px;" src="corona-free-dark-bootstrap-admin-template-1.0.0\corona-free-dark-bootstrap-admin-template-1.0.0\template\assets\images\sahibinden-satilik-daire.jpg" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title" style="color:black">@item.Header</h5><br />
+                                <p style="color: black ">Rent : </p>
+                                <p class="card-title" style="color: black">@item.Pay TL</p>
+                                <p class="card-title" style="color: black">@item.Pay TL</p>
+                                <p class="card-text" style="color: black ">@item.CreateDate</p>
+                                <button @onclick="() => SeeHouseDetail(item.ID)" class="btn btn-primary">See Detail</button>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+@code {
+    List<HouseDto> houseList = new List<HouseDto>();
+    List<CityDto> cityList = new List<CityDto>();
+    CityDto selectedCity = new CityDto();
+    DistrictDto selectedDistrict = new DistrictDto();
+    List<DistrictDto> districts = new List<DistrictDto>();
+    List<HouseDto> houseListByCity = new List<HouseDto>();
+    List<HouseDto> houseListByDistrict = new List<HouseDto>();
+    List<HouseDto> houseListByAge = new List<HouseDto>();
+    List<RentDto> rentList = new List<RentDto>();
+    List<UserDto> users = new List<UserDto>();
+    DistrictSelectDto selectDistrict = new DistrictSelectDto();
+    List<DistrictSelectDto> listOfDistrict = new List<DistrictSelectDto>();
+    private bool ByAge { get; set; }
+    private bool AlertResultCity { get; set; }
+    private bool AlertResultDistrict { get; set; }
+    private bool AlertResultAge { get; set; }
+    private bool AlertPost { get; set; }
+    int temp = 0;
+    string selectedGender = "";
+    List<UserDto> userAgeList = new List<UserDto>();
+    List<UserDto> userGenderList = new List<UserDto>();
+    public string Name;
+    public string RoleID;
+    public int SelectedHouseID;
+    protected async override Task OnInitializedAsync()
+    {
+        Name = "Welcome " + await sessionStorage.GetItemAsync<string>("Name") + " " + await sessionStorage.GetItemAsync<string>("Surname");
+        RoleID = await sessionStorage.GetItemAsync<string>("RoleID");
+        AlertPost = true;
+        houseList = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetAll");
+        cityList = await Http.GetFromJsonAsync<List<CityDto>>("City/GetAll");
+        rentList = await Http.GetFromJsonAsync<List<RentDto>>("Rent/GetAll");
+        ByAge = false;
+
+    }
+    async void GetDistrictList(ChangeEventArgs e = null)
+    {
+        houseList = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetAll");
+        selectedDistrict = null;
+        listOfDistrict.Clear();
+
+        if (e != null)
+        {
+            if (selectedGender == "")
+            {
+                AlertResultCity = false;
+                AlertPost = true;
+                selectedCity = cityList.Where(c => c.ID.ToString() == e.Value.ToString()).FirstOrDefault();
+                districts = await Http.GetFromJsonAsync<List<DistrictDto>>("District/GetAll/" + selectedCity.ID);
+                foreach (var item in districts)
+                {
+                    DistrictSelectDto selectD = new DistrictSelectDto()
+                    {
+
+                        ID = item.ID,
+                        Name = item.Name,
+                        CityID = item.CityID,
+                        isSelected = false,
+                    };
+                    listOfDistrict.Add(selectD);
+                }
+                GetHousePostByCity(selectedCity.ID);
+                this.StateHasChanged();
+            }
+            else
+            {
+                foreach (var item in houseList)
+                {
+                    var user = await Http.GetFromJsonAsync<UserDto>("User/GetById/" + item.UserID);
+                    users.Add(user);
+                }
+                foreach (var item in users)
+                {
+                    if (e.Value.ToString() == item.Age.ToString())
+                    {
+                        userAgeList.Add(item);
+                    }
+                }
+                if (userAgeList == null || !userAgeList.Any())
+                {
+                    AlertResultAge = true;
+                    AlertPost = false;
+
+                }
+                else
+                {
+                    HouseDto dto = new HouseDto();
+                    List<HouseDto> list = new List<HouseDto>();
+                    foreach (var item in userAgeList)
+                    {
+                        dto = houseList.Where(c => c.UserID.ToString() == item.ID.ToString()).FirstOrDefault();
+                        list.Add(dto);
+
+                    }
+                    houseList = list;
+                    AlertPost = true;
+                }
+                this.StateHasChanged();
+                //houseList.Clear();
+                userAgeList.Clear();
+                houseList = houseList = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetAll");
+            }
+
+        }
+
+    }
+
+
+    async void GetHousePostByCity(int cityID)
+    {
+
+        houseList = houseList.Where(c => c.CityID.ToString() == cityID.ToString()).ToList();
+        if (houseList == null || !houseList.Any())
+        {
+            AlertResultCity = true;
+            AlertPost = false;
+
+        }
+        else
+        {
+            AlertResultCity = false;
+
+
+        }
+        this.StateHasChanged();
+    }
+
+    async void SelectDistrict(ChangeEventArgs e = null)
+    {
+
+        houseList = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetAll");
+        if (e != null)
+        {
+            AlertResultDistrict = false;
+            AlertPost = true;
+            selectDistrict = listOfDistrict.Where(c => c.ID.ToString() == e.Value.ToString()).FirstOrDefault();
+            selectDistrict.isSelected = true;
+            houseList = houseList.Where(c => c.DistrictID.ToString() == e.Value.ToString()).ToList();
+
+            if (houseList == null || !houseList.Any())
+            {
+                AlertResultDistrict = true;
+                AlertPost = false;
+                houseList = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetAll");
+            }
+            else
+            {
+                AlertResultDistrict = false;
+            }
+            e = null;
+            this.StateHasChanged();
+        }
+
+    }
+    async void SelectAge(ChangeEventArgs e = null)
+    {
+        ByAge = false;
+        AlertPost = true;
+        List<HouseDto> listHouse = new List<HouseDto>();
+
+        users.Clear();
+        userAgeList.Clear();
+        AlertResultAge = false;
+        if (e != null)
+        {
+
+            foreach (var item in houseList)
+            {
+                var user = await Http.GetFromJsonAsync<UserDto>("User/GetById/" + item.UserID);
+                users.Add(user);
+            }
+            foreach (var item in users)
+            {
+                if (e.Value.ToString() == item.Age.ToString())
+                {
+                    userAgeList.Add(item);
+                }
+            }
+            if (userAgeList == null || !userAgeList.Any())
+            {
+                AlertResultAge = true;
+                AlertPost = false;
+
+            }
+            else
+            {
+                HouseDto dto = new HouseDto();
+                List<HouseDto> list = new List<HouseDto>();
+                foreach (var item in userAgeList)
+                {
+                    dto = houseList.Where(c => c.UserID.ToString() == item.ID.ToString()).FirstOrDefault();
+                    list.Add(dto);
+
+                }
+                houseList = list;
+                AlertPost = true;
+            }
+            this.StateHasChanged();
+            //houseList.Clear();
+            userAgeList.Clear();
+            houseList = houseList = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetAll");
+        }
+    }
+    async void SelectGender(ChangeEventArgs e = null)
+    {
+        userGenderList.Clear();
+        List<HouseDto> list = new List<HouseDto>();
+        if (e != null)
+        {
+            selectedGender = e.Value.ToString();
+            if (selectedCity.ID != null && selectedCity.Name != null)
+            {
+                GetHousePostByCity(selectedCity.ID);
+            }
+            foreach (var item in houseList)
+            {
+                var user = await Http.GetFromJsonAsync<UserDto>("User/GetById/" + item.UserID);
+                users.Add(user);
+            }
+            foreach (var item in users)
+            {
+                if (e.Value.ToString() == item.Gender)
+                {
+                    userGenderList.Add(item);
+                }
+            }
+            if (userGenderList == null || !userGenderList.Any())
+            {
+                AlertResultAge = true;
+                AlertPost = false;
+
+            }
+            else
+            {
+                HouseDto dto = new HouseDto();
+
+                foreach (var item in userGenderList)
+                {
+                    dto = houseList.Where(c => c.UserID.ToString() == item.ID.ToString()).FirstOrDefault();
+                    list.Add(dto);
+
+                }
+                houseList = list;
+                AlertResultAge = false;
+                AlertPost = true;
+            }
+            this.StateHasChanged();
+            list.Clear();
+            AlertResultAge = false;
+            houseList.Clear();
+            userGenderList.Clear();
+            users.Clear();
+            houseList = houseList = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetAll");
+        }
+    }
+
+    async void SeeHouseDetail(int houseID)
+    {
+        SelectedHouseID = houseID;
+        await sessionStorage.SetItemAsync("SelectedHouseID", SelectedHouseID);
+        navigationaManager.NavigateTo("/SeeHouseDetail");
+    }
+
+}

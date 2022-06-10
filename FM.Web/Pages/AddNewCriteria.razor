@@ -1,0 +1,46 @@
+﻿@page "/AddNewCriteria"
+@layout MainLayout
+@inject IJSRuntime js
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+<div class="page-header">
+    <h3 class="page-title">Facility</h3>
+</div>
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Create New Criteria</h4>
+            <p class="card-description"> </p>
+            <div class="forms-sample">
+                <div class="form-group">
+                    <label for="exampleInputUsername1">Criteria Name</label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" @bind-value="@criteriaDto.Name" placeholder="Criteria Name">
+                </div>
+                <button @onclick="CreateCriteria" class="btn btn-primary mr-2">Submit</button>
+                <button class="btn btn-dark">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    CriteriaDto criteriaDto = new CriteriaDto();
+    public async Task CreateCriteria()
+    {
+        if (criteriaDto != null)
+        {
+            var newCriteria = await Http.PostAsJsonAsync("Criteria/CreateCriteria", criteriaDto);
+            var newCriteriaStr = await newCriteria.Content.ReadFromJsonAsync<ApiResponseDto<CriteriaDto>>();
+            if (newCriteriaStr.IsSucces)
+            {
+                navigationaManager.NavigateTo("/criteria");
+            }
+            else
+            {
+                navigationaManager.NavigateTo("/users");
+            }
+        }
+    }
+}

@@ -1,0 +1,100 @@
+﻿@page "/signin"
+@layout NoLayout
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.DTOs
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solid Template</title>
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,600" rel="stylesheet">
+
+    <link href="/solid/dist/css/style.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="row w-100 m-0">
+                <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+                    <div class="card col-lg-4 mx-auto">
+                        <div class="card-body px-5 py-5">
+                            <h3 class="card-title text-left mb-3">Login</h3>
+                            <div>
+                                <div class="form-group">
+                                    <label>email *</label>
+                                    <input @bind-value="loginRequestDto.Email" type="text" class="form-control p_input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Password *</label>
+                                    <input @bind-value="loginRequestDto.Password" type="password" class="form-control p_input">
+                                </div>
+
+                                <div class="text-center">
+                                    <button @onclick="LoginRequest" type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                                </div>
+                                @if (AlertLoginFail)
+                                {
+                                    <p class="text-danger">Email or password is incorrect</p>
+                                }
+                                @if (AlertLoginWarning)
+                                {
+                                    <p class="text-warning">You must enter email and password</p>
+                                }
+
+                                <p class="sign-up">Don't have an Account?<a href="#"> Sign Up</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- content-wrapper ends -->
+            </div>
+            <!-- row ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+
+</body>
+</html>
+
+@code {
+    bool AlertLoginFail { get; set; }
+    bool AlertLoginWarning { get; set; }
+    LoginRequestDto loginRequestDto = new LoginRequestDto();
+    public async Task LoginRequest()
+    {
+        if (loginRequestDto.Email != null && loginRequestDto.Password != null)
+        {
+            var loginResponse = await Http.PostAsJsonAsync("User/Login", loginRequestDto);
+            var responsestr = await loginResponse.Content.ReadFromJsonAsync<ApiResponseDto<LoginResponseDto>>();
+            if (responsestr.IsSucces)
+            {
+                AlertLoginFail = false;
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", responsestr.Data.TokenID);
+                await sessionStorage.SetItemAsync("ID", responsestr.Data.ID);
+                await sessionStorage.SetItemAsync("Name", responsestr.Data.Name);
+                await sessionStorage.SetItemAsync("Surname", responsestr.Data.Surname);
+                await sessionStorage.SetItemAsync("RoleID", responsestr.Data.RoleID.ToString());
+
+                
+                navigationaManager.NavigateTo("/dashboard");
+                AlertLoginWarning = false;
+            }
+            else
+            {
+                AlertLoginFail = true;
+                this.StateHasChanged();
+            }
+        }
+        else
+        {
+            AlertLoginWarning = true;
+            this.StateHasChanged();
+
+        }
+    }
+}

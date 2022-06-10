@@ -1,0 +1,91 @@
+﻿@page "/PostOwner"
+@layout MainLayout
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+@inject NavigationManager UriHelper
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.Web.Data
+<div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">@userDto.Name @userDto.Surname</h4>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex py-4">
+                        <div class="preview-list w-100">
+                            <div class="preview-item p-0">
+                                <div class="preview-item-content d-flex flex-grow">
+                                    <div class="flex-grow">
+                                        <div class="d-flex d-md-block d-xl-flex justify-content-between">
+                                            <h6>Email :</h6>
+                                            <h6 class="preview-subject">@userDto.Email</h6>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex py-4">
+                        <div class="preview-list w-100">
+                            <div class="preview-item p-0">
+                                <div class="preview-item-content d-flex flex-grow">
+                                    <div class="flex-grow">
+                                        <div class="d-flex d-md-block d-xl-flex justify-content-between">
+                                            <h6>Gender :</h6>
+                                            <h6 class="preview-subject">@userDto.Gender</h6>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex py-4">
+                        <div class="preview-list w-100">
+                            <div class="preview-item p-0">
+                                <div class="preview-item-content d-flex flex-grow">
+                                    <div class="flex-grow">
+                                        <div class="d-flex d-md-block d-xl-flex justify-content-between">
+                                            <h6>Age :</h6>
+                                            <h6 class="preview-subject">@userDto.Age</h6>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    public int HouseOwnerID { get; set; }
+    UserDto userDto = new UserDto();
+    protected async override Task OnInitializedAsync()
+    {
+        HouseOwnerID = await sessionStorage.GetItemAsync<int>("HouseOwnerID");
+        userDto = await Http.GetFromJsonAsync<UserDto>("User/GetById/" + HouseOwnerID);
+    }
+}

@@ -1,0 +1,46 @@
+﻿@page "/AddNewFacility"
+@layout MainLayout
+@inject IJSRuntime js
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+<div class="page-header">
+    <h3 class="page-title">Facility</h3>
+</div>
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Create New Facility</h4>
+            <p class="card-description"> </p>
+            <div class="forms-sample">
+                <div class="form-group">
+                    <label for="exampleInputUsername1">Facility Name</label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" @bind-value="@facilityDto.Name" placeholder="Facility Name">
+                </div>
+                <button @onclick="CreateFacility" class="btn btn-primary mr-2">Submit</button>
+                <button class="btn btn-dark">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    FacilityDto facilityDto = new FacilityDto();
+    public async Task CreateFacility()
+    {
+        if (facilityDto != null)
+        {
+            var newFacility = await Http.PostAsJsonAsync("Facility/CreateFacility", facilityDto);
+            var newFacilityStr = await newFacility.Content.ReadFromJsonAsync<ApiResponseDto<FacilityDto>>();
+            if (newFacilityStr.IsSucces)
+            {
+                navigationaManager.NavigateTo("/facility");
+            }
+            else
+            {
+                navigationaManager.NavigateTo("/users");
+            }
+        }
+    }
+}

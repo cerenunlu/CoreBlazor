@@ -1,0 +1,12 @@
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\bin\Debug\net5.0\FM.DataLayer.deps.json
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\bin\Debug\net5.0\FM.DataLayer.dll
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\bin\Debug\net5.0\ref\FM.DataLayer.dll
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\bin\Debug\net5.0\FM.DataLayer.pdb
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\FM.DataLayer.csproj.AssemblyReference.cache
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\FM.DataLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\FM.DataLayer.AssemblyInfoInputs.cache
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\FM.DataLayer.AssemblyInfo.cs
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\FM.DataLayer.csproj.CoreCompileInputs.cache
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\FM.DataLayer.dll
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\ref\FM.DataLayer.dll
+C:\Users\MSI PC\source\repos\FM\FM.DataLayer\obj\Debug\net5.0\FM.DataLayer.pdb

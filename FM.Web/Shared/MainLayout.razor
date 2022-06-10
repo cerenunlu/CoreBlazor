@@ -1,0 +1,32 @@
+﻿@inherits LayoutComponentBase
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.Web.Data
+<div class="page">
+    <div>
+        @if (RoleID == "2")
+        {
+            <NavMenu />
+        }
+        else if (RoleID == "1")
+        {
+            <NavMenuAdmin />
+        }
+
+    </div>
+
+    <div class="main">
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+@code{
+    public string RoleID;
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        RoleID = await sessionStorage.GetItemAsync<string>("RoleID");
+    }
+}

@@ -1,0 +1,525 @@
+﻿@page "/NewPost"
+@layout MainLayout
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+@inject NavigationManager UriHelper
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.Web.Data
+
+
+<div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+        <div class="content p-4">
+            <blockquote class="blockquote blockquote-primary">
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Create New Post</h4>
+                            <p class="card-description"></p>
+                            <div class="forms-sample">
+                                <div class="form-group">
+                                    <label for="exampleInputName1">Header</label>
+                                    <input @bind-value="@newHouse.Header" type="text" class="form-control" id="exampleInputName1" placeholder="Header">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail3">Description</label>
+                                    <input @bind-value="@newHouse.Description" type="text" class="form-control" id="exampleInputName1" placeholder="Header">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword4">Address</label>
+                                    <input @bind-value="@newHouse.Address" type="text" class="form-control" id="exampleInputPassword4" placeholder="Address">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleSelectGender">City</label>
+                                    <select class="form-control" id="exampleSelectGender" @onchange="@SelectedCity">
+                                        <option value="" selected>Select City</option>
+                                        @foreach (var item in cityList)
+                                        {
+                                            <option value="@item.ID">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleSelectGender">District</label>
+                                    <select class="form-control" id="exampleSelectGender" @onchange="SelectedDistrict">
+                                        <option value="" selected>Select District</option>
+                                        @foreach (var item in districtList)
+                                        {
+                                            <option value="@item.ID">@item.Name</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword4">Total House Size</label>
+                                    <input @bind-value="@newHouse.Size" type="text" class="form-control" id="exampleInputPassword4" placeholder="Total House Size">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword4">Period</label>
+                                    <p style="font-size:10px;color:gray">How long will it be</p>
+                                    <input @bind-value="@newHouse.Period" type="text" class="form-control" id="exampleInputPassword4" placeholder="Period">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword4">Moving In</label>
+                                    <p style="font-size:10px;color:gray">For when</p>
+                                    <input type="text" @bind-value="@newHouse.Period" class="form-control" id="exampleInputPassword4" placeholder="Moving In">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword4">Deposit</label>
+                                    <input type="text" @bind-value="@newHouse.Deposit" class="form-control" id="exampleInputPassword4" placeholder="Deposit">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword4">Rent</label>
+                                    <input type="text" @bind-value="@newHouse.Pay" class="form-control" id="exampleInputPassword4" placeholder="Rent">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>File upload</label>
+                                    <input type="file" name="img[]" class="file-upload-default">
+                                    <div class="input-group col-xs-12">
+                                        <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
+                                        <span class="input-group-append">
+                                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                        </span>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </blockquote>
+
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">House's Facilities</h4>
+
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Cable TV</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@CableTvSelect">
+                                            <option value="" selected>Select Availability</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Internet</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@InternetSelect">
+                                            <option value="" selected>Select Availability</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Washing Machine</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@WashingSelect">
+                                            <option value="" selected>Select Availability</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Dishwasher</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@Dishwasher">
+                                            <option value="" selected>Select Availability</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">AirConditioner</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@AirConditioner">
+                                            <option value="" selected>Select Availability</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Pets Allowed</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@Pets">
+                                            <option value="" selected>Select Availability</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Smoking</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@Smoking">
+                                            <option value="" selected>Select Availability</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Last Step</h3>
+                        <h4 class="card-title">The Criterias You Are Looking For</h4>
+
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">What age range do you prefer?</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@SelectAgeRange">
+                                            <option value="" selected>Select</option>
+                                            <option value="17-21">17-21</option>
+                                            <option value="21-25">21-25</option>
+                                            <option value="25+">25+</option>
+                                            <option value="No">does not matter</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">which gender do you prefer? </h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@SelectGender">
+                                            <option value="" selected>Select</option>
+                                            <option value="Woman">Woman</option>
+                                            <option value="Man">Man</option>
+                                            <option value="No">does not matter</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Is cleaning very important?</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@SelectClean">
+                                            <option value="0" selected>Select</option>
+                                            <option value="1">Yes</option>
+                                            <option value="2">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">How often do you party</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@SelectParty">
+                                            <option value="0" selected>Select</option>
+                                            <option value="1">frequently</option>
+                                            <option value="2">Sometimes</option>
+                                            <option value="3">Never</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+                        <blockquote class="blockquote blockquote-primary">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <h4 style="margin-top:7px">Do you make close friendships with your roommate?</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" id="exampleSelectGender" @onchange="@SelectFriendship">
+                                            <option value="0" selected>Select</option>
+                                            <option value="1">Yes</option>
+                                            <option value="2">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </blockquote>
+
+                    </div>
+                </div>
+            </div>
+            <h3>@Message</h3>
+            <button class="btn btn-inverse-danger btn-fw">Cancel</button>
+            <button @onclick="Continue" class="btn btn-inverse-success btn-fw" style="position:absolute;right:0px">Continue<i class="mdi mdi-arrow-right"></i></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    HouseDto newHouse = new HouseDto();
+    List<CityDto> cityList = new List<CityDto>();
+    CityDto selectedCity = new CityDto();
+    List<DistrictDto> districtList = new List<DistrictDto>();
+    SampleFacilityDto sampleFacility = new SampleFacilityDto();
+    SampleCriteriaDto sampleCriteria = new SampleCriteriaDto();
+    public string UserID;
+    public string Message;
+    protected async override Task OnInitializedAsync()
+    {
+        sampleFacility.ID = 0;
+        sampleFacility.CableTv = "0";
+        sampleFacility.Internet = "0";
+        sampleFacility.WashingMachine = "0";
+        sampleFacility.Dishwasher = "0";
+        sampleFacility.AirConditioner = "0";
+        sampleFacility.PetsAllowed = "0";
+        sampleFacility.Smoking = "0";
+        sampleCriteria.Age = "0";
+        sampleCriteria.PreferredGender = "0";
+        sampleCriteria.Cleanliness = "0";
+        sampleCriteria.PartyHabit = "0";
+        sampleCriteria.Friendship = "0";
+        cityList = await Http.GetFromJsonAsync<List<CityDto>>("City/GetAll");
+
+    }
+
+    async void SelectedCity(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            selectedCity = cityList.Where(c => c.ID.ToString() == e.Value.ToString()).FirstOrDefault();
+            newHouse.CityID = selectedCity.ID;
+            districtList = await Http.GetFromJsonAsync<List<DistrictDto>>("District/GetAll/" + selectedCity.ID);
+            this.StateHasChanged();
+        }
+    }
+    async void SelectedDistrict(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            newHouse.DistrictID = int.Parse(e.Value.ToString());
+        }
+    }
+
+    async void CableTvSelect(ChangeEventArgs e = null)
+    {
+        if (e != null && e.Value.ToString() == "1")
+        {
+            sampleFacility.CableTv = "1";
+
+        }
+
+    }
+    async void InternetSelect(ChangeEventArgs e = null)
+    {
+        if (e != null && e.Value.ToString() == "1")
+        {
+            sampleFacility.Internet = "1";
+
+        }
+
+    }
+    async void WashingSelect(ChangeEventArgs e = null)
+    {
+        if (e != null && e.Value.ToString() == "1")
+        {
+            sampleFacility.WashingMachine = "1";
+
+        }
+
+    }
+    async void Dishwasher(ChangeEventArgs e = null)
+    {
+        if (e != null && e.Value.ToString() == "1")
+        {
+            sampleFacility.Dishwasher = "1";
+
+        }
+
+    }
+    async void AirConditioner(ChangeEventArgs e = null)
+    {
+        if (e != null && e.Value.ToString() == "1")
+        {
+            sampleFacility.AirConditioner = "1";
+
+        }
+
+    }
+    async void Pets(ChangeEventArgs e = null)
+    {
+        if (e != null && e.Value.ToString() == "1")
+        {
+            sampleFacility.PetsAllowed = "1";
+
+        }
+    }
+    async void Smoking(ChangeEventArgs e = null)
+    {
+        if (e != null && e.Value.ToString() == "1")
+        {
+            sampleFacility.Smoking = "1";
+
+        }
+    }
+
+    async void SelectAgeRange(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            sampleCriteria.Age = e.Value.ToString();
+        }
+    }
+
+    async void SelectGender(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            sampleCriteria.PreferredGender = e.Value.ToString();
+        }
+    }
+
+    async void SelectClean(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            sampleCriteria.Cleanliness = e.Value.ToString();
+        }
+    }
+
+    async void SelectParty(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            sampleCriteria.PartyHabit = e.Value.ToString();
+        }
+    }
+    async void SelectFriendship(ChangeEventArgs e = null)
+    {
+        if (e != null)
+        {
+            sampleCriteria.Friendship = e.Value.ToString();
+        }
+    }
+    public async void Continue()
+    {
+
+
+        var newSampleFacility = await Http.PostAsJsonAsync("SampleFacility/CreateSampleFacility", sampleFacility);
+        var newSampleFacilityStr = await newSampleFacility.Content.ReadFromJsonAsync<ApiResponseDto<SampleFacilityDto>>();
+        if (newSampleFacilityStr.IsSucces)
+        {
+            var newCriteria = await Http.PostAsJsonAsync("SampleCriteria/CreateSampleCriteria", sampleCriteria);
+            var newCriteriaStr = await newCriteria.Content.ReadFromJsonAsync<ApiResponseDto<SampleCriteriaDto>>();
+            if (newCriteriaStr.IsSucces)
+            {
+                newHouse.SampleCriteriaID = newCriteriaStr.Data.ID;
+                newHouse.SampleFacilityID = newSampleFacilityStr.Data.ID;
+                UserID = await sessionStorage.GetItemAsync<string>("ID");
+                newHouse.UserID = Int32.Parse(UserID);
+                var createdHouse = await Http.PostAsJsonAsync("HousePost/CreateNewHouse", newHouse);
+                var createdHouseStr = await createdHouse.Content.ReadFromJsonAsync<ApiResponseDto<HouseDto>>();
+                if (createdHouseStr.IsSucces)
+                {
+                    await sessionStorage.SetItemAsync("Message", "Created Successfully");
+                    navigationaManager.NavigateTo("/MyHousePost");
+                    this.StateHasChanged();
+                }
+                else
+                {
+                    Message = "creating is failed";
+                    this.StateHasChanged();
+
+                }
+
+
+            }
+        }
+
+    }
+}

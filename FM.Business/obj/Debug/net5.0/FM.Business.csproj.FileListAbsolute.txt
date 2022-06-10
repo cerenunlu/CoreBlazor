@@ -1,0 +1,17 @@
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\FM.Business.deps.json
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\FM.Business.dll
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\ref\FM.Business.dll
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\FM.Business.pdb
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\FM.DataLayer.dll
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\FM.DTOs.dll
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\FM.DataLayer.pdb
+C:\Users\MSI PC\source\repos\FM\FM.Business\bin\Debug\net5.0\FM.DTOs.pdb
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.csproj.AssemblyReference.cache
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.AssemblyInfoInputs.cache
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.AssemblyInfo.cs
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.csproj.CoreCompileInputs.cache
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.csproj.CopyComplete
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.dll
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\ref\FM.Business.dll
+C:\Users\MSI PC\source\repos\FM\FM.Business\obj\Debug\net5.0\FM.Business.pdb

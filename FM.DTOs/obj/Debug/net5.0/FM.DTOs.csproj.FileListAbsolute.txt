@@ -1,0 +1,12 @@
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\bin\Debug\net5.0\FM.DTOs.deps.json
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\bin\Debug\net5.0\FM.DTOs.dll
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\bin\Debug\net5.0\ref\FM.DTOs.dll
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\bin\Debug\net5.0\FM.DTOs.pdb
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\FM.DTOs.csproj.AssemblyReference.cache
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\FM.DTOs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\FM.DTOs.AssemblyInfoInputs.cache
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\FM.DTOs.AssemblyInfo.cs
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\FM.DTOs.csproj.CoreCompileInputs.cache
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\FM.DTOs.dll
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\ref\FM.DTOs.dll
+C:\Users\MSI PC\source\repos\FM\FM.DTOs\obj\Debug\net5.0\FM.DTOs.pdb

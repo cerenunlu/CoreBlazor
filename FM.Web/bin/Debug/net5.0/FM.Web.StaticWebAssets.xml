@@ -1,0 +1,4 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="/" Path="C:\Users\MSI PC\source\repos\FM\FM.Web\bin\Debug\net5.0\wwwroot\" />
+  <ContentRoot BasePath="/" Path="C:\Users\MSI PC\source\repos\FM\FM.Web\obj\Debug\net5.0\scopedcss\bundle\" />
+</StaticWebAssets>

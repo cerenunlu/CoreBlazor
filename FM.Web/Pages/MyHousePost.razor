@@ -1,0 +1,102 @@
+﻿@page "/MyHousePost"
+@layout MainLayout
+@using FM.DTOs
+@inject HttpClient Http
+@inject NavigationManager navigationaManager
+@inject NavigationManager UriHelper
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using FM.Web.Data
+
+<div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+        <nav class="navbar p-4 fixed-top d-flex flex-row">
+            <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+                <a class="navbar-brand brand-logo-mini" href="index.html"></a>
+            </div>
+            <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+                <ul class="navbar-nav navbar-nav-right">
+                    <li class="nav-item dropdown d-none d-lg-block">
+                        <a @onclick="CreateNewPost" class="nav-link btn btn-success create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Create New Post</a>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+        <div>
+            <div class="main-panel">
+                <div class="row">
+                    @if (post)
+                    {
+                        @foreach (var item in houseDtos)
+                        {
+
+                            <div class="col-sm-4 grid-margin">
+                                <div class="card" style="background-color:cadetblue;opacity:0.7;height:200px">
+                                    <div class="card-body">
+                                        <h5>@item.Header</h5>
+                                        <div class="row">
+                                            <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                                                <div class="d-flex d-sm-block d-md-flex align-items-center">
+
+                                                    <p class="text-success ml-2 mb-0 font-weight-medium">@item.CreateDate</p>
+                                                </div>
+                                                <p class="text-muted font-weight-normal">@item.Description</p>
+                                            </div>
+                                            <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                                                <button type="button" class="btn btn-dark btn-icon-text">
+                                                    Edit <i class="mdi mdi-file-check btn-icon-append"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                    }
+                    @if (alertMessage)
+                    {
+                        <blockquote class="blockquote blockquote-primary">
+                            <p>@Message</p>
+                        </blockquote>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    List<HouseDto> houseDtos = new List<HouseDto>();
+    public string ID;
+    public string Message { get; set; }
+    public bool alertMessage { get; set; }
+    public bool post { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+        ID = await sessionStorage.GetItemAsync<string>("ID");
+        var houseResponse = await Http.GetFromJsonAsync<List<HouseDto>>("HousePost/GetHouseListByUserID/" + ID);
+
+        if (houseResponse == null || !houseResponse.Any())
+        {
+
+            Message = "You have not any Post";
+            alertMessage = true;
+        }
+        else
+        {
+            houseDtos = houseResponse;
+            post = true;
+        }
+
+
+    }
+    public async void CreateNewPost()
+    {
+        navigationaManager.NavigateTo("/NewPost");
+    }
+}
